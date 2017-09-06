@@ -1,6 +1,6 @@
 // compile and run from the commandline with:
-//    clang -fobjc-arc -framework Cocoa  ./foo.m  -o foo
-//    sudo ./foo 
+//    clang -fobjc-arc -framework Cocoa  ./remap.m  -o remap
+//    sudo ./remap 
 
 #import <Foundation/Foundation.h>
 #import <AppKit/NSEvent.h>
@@ -64,108 +64,25 @@ CGEventRef _tapCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef even
     }
 }
 
-- (CGEventRef)processEvent:(CGEventRef)cgEvent
+- (NSEvent*)getEventCharacter:(NSString*)character event:(NSEvent*) event 
 {
-    NSEvent* event = [NSEvent eventWithCGEvent:cgEvent];
-    int key = [event keyCode];
-    int modifier = [event modifierFlags];
-
-    if (key == 11 && modifier == 524352) {
-        event = [NSEvent keyEventWithType:event.type
+    return [NSEvent keyEventWithType:event.type
                                  location:NSZeroPoint
                             modifierFlags:event.modifierFlags
                                 timestamp:event.timestamp
                              windowNumber:event.windowNumber
                                   context:event.context
-                               characters:@"{"
-              charactersIgnoringModifiers:@"{"
+                               characters:character
+              charactersIgnoringModifiers:character
                                 isARepeat:event.isARepeat
                                   keyCode:event.keyCode];
-    }
+}
 
-    if (key == 45 && modifier == 524352) {
-        event = [NSEvent keyEventWithType:event.type
+- (NSEvent*)getEventModifier:(int)modifier event:(NSEvent*) event 
+{
+    return [NSEvent keyEventWithType:event.type
                                  location:NSZeroPoint
-                            modifierFlags:event.modifierFlags
-                                timestamp:event.timestamp
-                             windowNumber:event.windowNumber
-                                  context:event.context
-                               characters:@"}"
-              charactersIgnoringModifiers:@"}"
-                                isARepeat:event.isARepeat
-                                  keyCode:event.keyCode];
-    }
-
-    if (key == 3 && modifier == 524352) {
-        event = [NSEvent keyEventWithType:event.type
-                                 location:NSZeroPoint
-                            modifierFlags:event.modifierFlags
-                                timestamp:event.timestamp
-                             windowNumber:event.windowNumber
-                                  context:event.context
-                               characters:@"["
-              charactersIgnoringModifiers:@"["
-                                isARepeat:event.isARepeat
-                                  keyCode:event.keyCode];
-    }
-
-    if (key == 5 && modifier == 524352) {
-        event = [NSEvent keyEventWithType:event.type
-                                 location:NSZeroPoint
-                            modifierFlags:event.modifierFlags
-                                timestamp:event.timestamp
-                             windowNumber:event.windowNumber
-                                  context:event.context
-                               characters:@"]"
-              charactersIgnoringModifiers:@"]"
-                                isARepeat:event.isARepeat
-                                  keyCode:event.keyCode];
-    }
-
-    if (key == 9 && modifier == 524352) {
-        event = [NSEvent keyEventWithType:event.type
-                                 location:NSZeroPoint
-                            modifierFlags:event.modifierFlags
-                                timestamp:event.timestamp
-                             windowNumber:event.windowNumber
-                                  context:event.context
-                               characters:@"@"
-              charactersIgnoringModifiers:@"@"
-                                isARepeat:event.isARepeat
-                                  keyCode:event.keyCode];
-    }
-
-    if (key == 12 && modifier == 524352) {
-        event = [NSEvent keyEventWithType:event.type
-                                 location:NSZeroPoint
-                            modifierFlags:event.modifierFlags
-                                timestamp:event.timestamp
-                             windowNumber:event.windowNumber
-                                  context:event.context
-                               characters:@"\\"
-              charactersIgnoringModifiers:@"\\"
-                                isARepeat:event.isARepeat
-                                  keyCode:event.keyCode];
-    }
-
-    if (key == 13 && modifier == 524352) {
-        event = [NSEvent keyEventWithType:event.type
-                                 location:NSZeroPoint
-                            modifierFlags:event.modifierFlags
-                                timestamp:event.timestamp
-                             windowNumber:event.windowNumber
-                                  context:event.context
-                               characters:@"|"
-              charactersIgnoringModifiers:@"|"
-                                isARepeat:event.isARepeat
-                                  keyCode:event.keyCode];
-    }
-
-    // ctrl->command
-    if (modifier == 262145) {
-        event = [NSEvent keyEventWithType:event.type
-                                 location:NSZeroPoint
-                            modifierFlags:1048584
+                            modifierFlags:modifier
                                 timestamp:event.timestamp
                              windowNumber:event.windowNumber
                                   context:event.context
@@ -173,6 +90,48 @@ CGEventRef _tapCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef even
               charactersIgnoringModifiers:event.charactersIgnoringModifiers
                                 isARepeat:event.isARepeat
                                   keyCode:event.keyCode];
+}
+
+- (CGEventRef)processEvent:(CGEventRef)cgEvent
+{
+    NSEvent* event = [NSEvent eventWithCGEvent:cgEvent];
+    int key = [event keyCode];
+    int modifier = [event modifierFlags];
+
+    NSLog(@"keypress: %d", key);
+    NSLog(@"modifier: %d", modifier);
+
+    if (key == 11 && modifier == 524352) {
+        event = [self getEventCharacter:@"{" event:event];
+    }
+
+    if (key == 45 && modifier == 524352) {
+        event = [self getEventCharacter:@"}" event:event];
+    }
+
+    if (key == 3 && modifier == 524352) {
+        event = [self getEventCharacter:@"[" event:event];
+    }
+
+    if (key == 5 && modifier == 524352) {
+        event = [self getEventCharacter:@"]" event:event];
+    }
+
+    if (key == 9 && modifier == 524352) {
+        event = [self getEventCharacter:@"@" event:event];
+    }
+
+    if (key == 12 && modifier == 524352) {
+        event = [self getEventCharacter:@"\\" event:event];
+    }
+
+    if (key == 13 && modifier == 524352) {
+        event = [self getEventCharacter:@"|" event:event];
+    }
+
+    // ctrl->command
+    if (modifier == 262145) {
+        event = [self getEventModifier:1048584 event:event];
     }
 
     _lastEvent = [event CGEvent];
