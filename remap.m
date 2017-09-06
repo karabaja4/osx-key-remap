@@ -98,8 +98,8 @@ CGEventRef _tapCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef even
     int key = [event keyCode];
     int modifier = [event modifierFlags];
 
-    NSLog(@"keypress: %d", key);
-    NSLog(@"modifier: %d", modifier);
+    //NSLog(@"keypress: %d", key);
+    //NSLog(@"modifier: %d", modifier);
 
     if (key == 11 && modifier == 524352) {
         event = [self getEventCharacter:@"{" event:event];
