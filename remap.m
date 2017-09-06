@@ -98,40 +98,42 @@ CGEventRef _tapCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef even
     int key = [event keyCode];
     int modifier = [event modifierFlags];
 
-    //NSLog(@"keypress: %d", key);
-    //NSLog(@"modifier: %d", modifier);
-
     if (key == 11 && modifier == 524352) {
         event = [self getEventCharacter:@"{" event:event];
     }
 
-    if (key == 45 && modifier == 524352) {
+    else if (key == 45 && modifier == 524352) {
         event = [self getEventCharacter:@"}" event:event];
     }
 
-    if (key == 3 && modifier == 524352) {
+    else if (key == 3 && modifier == 524352) {
         event = [self getEventCharacter:@"[" event:event];
     }
 
-    if (key == 5 && modifier == 524352) {
+    else if (key == 5 && modifier == 524352) {
         event = [self getEventCharacter:@"]" event:event];
     }
 
-    if (key == 9 && modifier == 524352) {
+    else if (key == 9 && modifier == 524352) {
         event = [self getEventCharacter:@"@" event:event];
     }
 
-    if (key == 12 && modifier == 524352) {
+    else if (key == 12 && modifier == 524352) {
         event = [self getEventCharacter:@"\\" event:event];
     }
 
-    if (key == 13 && modifier == 524352) {
+    else if (key == 13 && modifier == 524352) {
         event = [self getEventCharacter:@"|" event:event];
     }
 
     // ctrl->command
-    if (modifier == 262145) {
+    else if (modifier == 262145) {
         event = [self getEventModifier:1048584 event:event];
+    }
+
+    // command->ctrl
+    else if (modifier == 1048584) {
+        event = [self getEventModifier:262145 event:event];
     }
 
     _lastEvent = [event CGEvent];
