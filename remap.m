@@ -86,7 +86,7 @@ CGEventRef _tapCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef even
                                 timestamp:event.timestamp
                              windowNumber:event.windowNumber
                                   context:event.context
-                               characters:event.characters
+                               characters:@""
               charactersIgnoringModifiers:event.charactersIgnoringModifiers
                                 isARepeat:event.isARepeat
                                   keyCode:event.keyCode];
@@ -126,6 +126,18 @@ CGEventRef _tapCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef even
         event = [self getEventCharacter:@"|" event:event];
     }
 
+    else if (key == 18 && modifier == 524352) {
+        event = [self getEventCharacter:@"~" event:event];
+    }
+
+    else if (key == 14 && modifier == 524352) {
+        event = [self getEventCharacter:@"€" event:event];
+    }
+
+    else if (key == 20 && modifier == 524352) {
+        event = [self getEventCharacter:@"^" event:event];
+    }
+
     // ctrl->command
     else if (modifier == 262145) {
         event = [self getEventModifier:1048584 event:event];
@@ -135,6 +147,9 @@ CGEventRef _tapCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef even
     else if (modifier == 1048584) {
         event = [self getEventModifier:262145 event:event];
     }
+
+    //NSLog(@"keypress: %d", key);
+    //NSLog(@"modifier: %d", modifier);
 
     _lastEvent = [event CGEvent];
     CFRetain(_lastEvent); // must retain the event. will be released by the system
